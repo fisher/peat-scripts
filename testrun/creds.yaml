@@ -1,0 +1,23 @@
+# Required. The formation/app id that peers share. Must match the
+# peers' `PEAT_NODE_APP_ID`.
+app_id: pi-demo
+
+# Required. 32-byte shared key, base64-encoded. Must match peers.
+# Generate a real one with `openssl rand -base64 32`.
+shared_key: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+
+# Optional. Persist the local Automerge store across invocations.
+# ~/  is expanded to your home directory. Overridden by --data-dir flag.
+#data_dir: ~/.local/share/peat/<your-formation-id>
+data_dir: /tmp/data-dir
+
+# Optional. Explicit peers to dial in `<endpoint-id>@<host>:<port>` form,
+# where host:port is the peer's Iroh UDP socket. Omit entirely if peers
+# are discoverable via mDNS — the CLI will find them automatically.
+#peers:
+#  - <endpoint-id>@<host>:<udp-port>
+
+# Optional. Disable mDNS peer discovery (needed in containers where
+# multicast is unavailable).
+#disable_mdns: true
+

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+${HOME}/prj/esl/target/release/peat --creds ./creds.yaml $@
+
