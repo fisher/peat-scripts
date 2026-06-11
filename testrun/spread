@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PNBIN="${HOME}/peat-node/target/release/peat-node" 
+
+if [ ! -f ${PNBIN} ]; then
+    echo "File ${PNBIN} not found. Stop"
+    exit 1
+fi
+
+scp ${PNBIN} p2:
+scp ${PNBIN} p3:
+

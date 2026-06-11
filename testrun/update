@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ ! -d ${HOME}/peat-node ]; then
+    cd
+    git clone https://github.com/defenseunicorns/peat-node.git
+    cd peat-node
+else
+    cd ${HOME}/peat-node
+    git pull
+fi
+
+cargo build --release
+#cd crates/peat-cli
+#cargo build --release
+
