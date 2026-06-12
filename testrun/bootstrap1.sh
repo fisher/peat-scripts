@@ -54,16 +54,22 @@ wait_ready "$NODE_B_URL"
 wait_ready "$NODE_C_URL"
 
 endpoint_a=$(call "$NODE_A_URL" GetStatus '{}' | jq -r .endpointAddr)
+endpoint_c=$(call "$NODE_C_URL" GetStatus '{}' | jq -r .endpointAddr)
 echo "node-a endpoint id: ${endpoint_a}"
+echo "node-c endpoint id: ${endpoint_c}"
 
 # node-b reaches node-a via Docker's embedded DNS at the service name
 # (no n0 relay involved). The UDP port matches PEAT_NODE_IROH_UDP_PORT
 # in docker-compose.yml.
 NODE_A_IROH_ADDR="${NODE_A_IROH_ADDR:-192.168.50.72:51081}"
+NODE_C_IROH_ADDR="${NODE_C_IROH_ADDR:-192.168.50.74:51081}"
 
 echo "Peering node-b -> node-a (direct UDP at ${NODE_A_IROH_ADDR})..."
 call "$NODE_B_URL" ConnectPeer \
   "{\"endpointId\":\"${endpoint_a}\",\"addresses\":[\"${NODE_A_IROH_ADDR}\"]}" >/dev/null
+echo "Peering node-b -> node-c (direct UDP at ${NODE_C_IROH_ADDR})..."
+call "$NODE_B_URL" ConnectPeer \
+  "{\"endpointId\":\"${endpoint_c}\",\"addresses\":[\"${NODE_C_IROH_ADDR}\"]}" >/dev/null
 echo "  done"
 
 # Auto-sync is on by default, but we also call StartSync explicitly so
@@ -71,6 +77,5 @@ echo "  done"
 call "$NODE_A_URL" StartSync '{}' >/dev/null
 call "$NODE_B_URL" StartSync '{}' >/dev/null
 call "$NODE_C_URL" StartSync '{}' >/dev/null
-echo "Sync started on both nodes."
+echo "Sync started on all nodes."
 
-echo
