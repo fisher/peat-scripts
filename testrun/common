@@ -20,12 +20,11 @@ fi
 
 
 if [ -f ${HOME}/peat-node -a -x ${HOME}/peat-node ]; then
-    PNBIN="${HOME}/peat-node"
+  PNBIN="${HOME}/peat-node"
 elif [ -x ${HOME}/peat-node/target/release/peat-node ]; then
-    PNBIN=${HOME}/peat-node/target/release/peat-node
+  PNBIN=${HOME}/peat-node/target/release/peat-node
 else
-    echo "FE: 'peat-node' binary does not found. Stop"
-    exit 1
+  PNBIN=""
 fi
 
 TCPP="50081"
