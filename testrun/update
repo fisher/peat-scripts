@@ -1,6 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-CWD=`pwd`
+if [ -r ./common ]; then
+    . common
+elif [ -r ~/peat-scripts/testrun/common ]; then
+    . ~/peat-scripts/testrun/common
+fi
+
 
 if [ -d ${HOME}/prj/esl/peat-node ]; then
   cd ${HOME}/prj/esl/peat-node
@@ -16,15 +21,24 @@ fi
 
 export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS="-C link-arg=-fuse-ld=mold"
 export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER="clang"
+
 cargo build --release
+check_rc "cargo build --release"
+
 cargo build -p peat-cli --release
+check_rc "build -p peat-cli"
+
+# only on Arch Linux (test laptop)
 if [ "_`hostname`" == "_hpprobook6570b" ]; then
   unset CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS
   unset CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER
   cross build --release --target aarch64-unknown-linux-gnu
+  check_rc "cross build"
   cross build -p peat-cli --release --target aarch64-unknown-linux-gnu
+  check_rc "cross build -p peat-cli"
 fi
-#cd crates/peat-cli
-#cargo build --release
+
+unset CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS
+unset CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER
 
 cd ${CWD}

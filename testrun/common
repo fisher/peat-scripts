@@ -5,10 +5,17 @@ NID="node-`hostname`"
 
 CWD=`pwd`
 
+function check_rc() {
+  if [ $? -ne 0 ]; then
+    echo "($1) Last command failed. Stop"
+    exit 1
+  fi
+}
+
 if [ -r ./creds.yaml ]; then
-  SHKEY="`cat ./creds.yaml |awk -p '/shared_key/ {print $2}'`"
+  SHKEY="`cat ./creds.yaml |awk '/shared_key/ {print $2}'`"
 elif [ -r ~/peat-scripts/testrun/creds.yaml ]; then
-  SHKEY="`cat ${HOME}/peat-scripts/testrun/creds.yaml |awk -p '/shared_key/ {print $2}'`"
+  SHKEY="`cat ${HOME}/peat-scripts/testrun/creds.yaml |awk '/shared_key/ {print $2}'`"
 fi
 
 
@@ -42,8 +49,5 @@ case "$HOSTNAME" in
         exit 2
         ;;
 esac
-
-mkdir -p ${HOME}/peat-testrun
-cd ${HOME}/peat-testrun
 
 
