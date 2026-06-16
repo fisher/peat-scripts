@@ -1,15 +1,30 @@
 #!/bin/sh
 
-if [ ! -d ${HOME}/peat-node ]; then
-    cd
-    git clone https://github.com/defenseunicorns/peat-node.git
-    cd peat-node
+CWD=`pwd`
+
+if [ -d ${HOME}/prj/esl/peat-node ]; then
+  cd ${HOME}/prj/esl/peat-node
+  git pull
+elif [ ! -d ${HOME}/peat-node ]; then
+  cd
+  git clone https://github.com/defenseunicorns/peat-node.git
+  cd peat-node
 else
-    cd ${HOME}/peat-node
-    git pull
+  cd ${HOME}/peat-node
+  git pull
 fi
 
+export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS="-C link-arg=-fuse-ld=mold"
+export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER="clang"
 cargo build --release
+cargo build -p peat-cli --release
+if [ "_`hostname`" == "_hpprobook6570b" ]; then
+  unset CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS
+  unset CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER
+  cross build --release --target aarch64-unknown-linux-gnu
+  cross build -p peat-cli --release --target aarch64-unknown-linux-gnu
+fi
 #cd crates/peat-cli
 #cargo build --release
 
+cd ${CWD}

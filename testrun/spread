@@ -1,12 +1,28 @@
 #!/bin/bash
 
-PNBIN="${HOME}/peat-node/target/release/peat-node" 
+case "_`hostname`" in
+  "_hpprobook6570b")
+    PNBIN="${HOME}/prj/esl/peat-node/target/aarch64-unknown-linux-gnu/release/peat-node"
+    if [ ! -f ${PNBIN} ]; then
+      echo "File ${PNBIN} not found. Stop"
+      exit 1
+    fi
+    scp ${PNBIN} pi@p1:peat-node/target/release
+    scp ${PNBIN} pi@p2:
+    scp ${PNBIN} pi@p3:
+    ;;
+  "_pi1")
+    PNBIN="${HOME}/peat-node/target/release/peat-node" 
 
-if [ ! -f ${PNBIN} ]; then
-    echo "File ${PNBIN} not found. Stop"
-    exit 1
-fi
+    if [ ! -f ${PNBIN} ]; then
+      echo "File ${PNBIN} not found. Stop"
+      exit 1
+    fi
 
-scp ${PNBIN} p2:
-scp ${PNBIN} p3:
-
+    scp ${PNBIN} pi@p2:
+    scp ${PNBIN} pi@p3:
+    ;;
+  *)
+    echo "unknown host. Stop"
+    ;;
+esac

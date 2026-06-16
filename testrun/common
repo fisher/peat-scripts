@@ -1,16 +1,16 @@
-
 APPID="pi-demo"
 SHKEY="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 DDIR="--data-dir /tmp/data-dir"
 NID="node-`hostname`"
 
-# hardcoded values;
-# need some way to get those before run
-ENDP1="fd76361f06992ff41cef9f42bac5421b1b15fa0011581c30e0b6a42c5490919a"
-ENDP2="074169836a50246815939a7bfa94b5a200756f8a9093b77adc352b9fd9ef8e69"
-ENDP3="bee7b5277d65d7b40f358a0562d03ad3fb089ec30e54a480be0d36372f116b0b"
-
 CWD=`pwd`
+
+if [ -r ./creds.yaml ]; then
+  SHKEY="`cat ./creds.yaml |awk -p '/shared_key/ {print $2}'`"
+elif [ -r ~/peat-scripts/testrun/creds.yaml ]; then
+  SHKEY="`cat ${HOME}/peat-scripts/testrun/creds.yaml |awk -p '/shared_key/ {print $2}'`"
+fi
+
 
 if [ -f ${HOME}/peat-node -a -x ${HOME}/peat-node ]; then
     PNBIN="${HOME}/peat-node"

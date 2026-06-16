@@ -8,3 +8,4 @@ fi
 
 ${PNBIN} --listen ${EXTIP}:${TCPP} --shared-key ${SHKEY} ${DDIR} --auto-sync --node-id ${NID} --iroh-udp-port 51081 ${PEERS} --app-id ${APPID}
 
+cd ${CWD}

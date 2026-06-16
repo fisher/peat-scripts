@@ -17,6 +17,9 @@ data_dir: /tmp/data-dir
 #peers:
 #  - <endpoint-id>@<host>:<udp-port>
 
+#peers:
+#  - 122c4ffd655614a5c56f6dd189e076d01fef9cf0bbc26aba1bc4f966b6fd2197@192.168.50.72:51081
+#   - 7b1ece4bdf19c2f2068b9c80dd13dafad93cc15ac22aafe95fc28623743650cf@192.168.50.74:51081
 # Optional. Disable mDNS peer discovery (needed in containers where
 # multicast is unavailable).
 #disable_mdns: true
