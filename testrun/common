@@ -43,10 +43,13 @@ case "$HOSTNAME" in
         EXTIP="192.168.50.74"
         PEERS=""
         ;;
+    "hpprobook6570b")
+      EXTIP="192.168.50.164"
+      ;;
     *)
-        echo "Unknown hostname. Stop"
-        exit 2
-        ;;
+      echo "Unknown hostname. Stop"
+      exit 2
+      ;;
 esac
 
 
