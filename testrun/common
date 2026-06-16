@@ -12,6 +12,27 @@ function check_rc() {
   fi
 }
 
+function git_update() {
+  local OLD_HASH=$(git rev-parse origin/main)
+  git pull
+  local NEW_HASH=$(git rev-parse origin/main)
+  [ ${OLD_HASH} == ${NEW_HASH} ] && return 1
+  return 0
+}
+
+function stage() {
+    printf "\x1b[38;5;2m---> ${1}\x1b[0m\n"
+}
+
+function halt() {
+    printf "\x1b[38;5;1m${1}\x1b[0m\n"
+    exit 2
+}
+ 
+function warn() {
+    printf "\x1b[38;5;11m${1}\x1b[0m\n"
+}
+
 if [ -r ./creds.yaml ]; then
   SHKEY="`cat ./creds.yaml |awk '/shared_key/ {print $2}'`"
 elif [ -r ~/peat-scripts/testrun/creds.yaml ]; then
@@ -45,6 +66,9 @@ case "$HOSTNAME" in
         ;;
     "hpprobook6570b")
       EXTIP="192.168.50.164"
+      ;;
+    "mob")
+      EXTIP="192.168.50.174"
       ;;
     *)
       echo "Unknown hostname. Stop"
