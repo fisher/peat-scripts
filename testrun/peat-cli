@@ -1,4 +1,12 @@
 #!/bin/bash
 
-${HOME}/prj/esl/target/release/peat --creds ./creds.yaml $@
+if [ -f ${HOME}/prj/esl/target/release/peat -a -x ${HOME}/prj/esl/target/release/peat ]; then
+  ${HOME}/prj/esl/target/release/peat --creds ./creds.yaml $@
+elif [ -x ${HOME}/peat-node/target/release/peat ]; then
+  ${HOME}/peat-node/target/release/peat --creds ./creds.yaml $@
+else
+  ./peat --creds ./creds.yaml $@
+fi
+
+#${HOME}/prj/esl/target/release/peat --creds ./creds.yaml $@
 

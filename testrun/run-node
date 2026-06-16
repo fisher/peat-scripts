@@ -11,6 +11,8 @@ fi
 mkdir -p ${HOME}/peat-testrun
 cd ${HOME}/peat-testrun
 
-${PNBIN} --listen ${EXTIP}:${TCPP} --shared-key ${SHKEY} ${DDIR} --auto-sync --node-id ${NID} --iroh-udp-port 51081 ${PEERS} --app-id ${APPID}
+#${PNBIN} --listen ${EXTIP}:${TCPP} --shared-key ${SHKEY} ${DDIR} --auto-sync --node-id ${NID} --iroh-udp-port 51081 ${PEERS} --app-id ${APPID}
+
+${PNBIN}
 
 cd ${CWD}

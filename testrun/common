@@ -1,7 +1,12 @@
 APPID="pi-demo"
+# default value; will be rewritten from creds.yaml
 SHKEY="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 DDIR="--data-dir /tmp/data-dir"
 NID="node-`hostname`"
+
+TCPP="50081"
+UDPP="51081"
+
 
 CWD=`pwd`
 
@@ -28,15 +33,17 @@ function halt() {
     printf "\x1b[38;5;1m${1}\x1b[0m\n"
     exit 2
 }
- 
+
 function warn() {
     printf "\x1b[38;5;11m${1}\x1b[0m\n"
 }
 
 if [ -r ./creds.yaml ]; then
   SHKEY="`cat ./creds.yaml |awk '/shared_key/ {print $2}'`"
-elif [ -r ~/peat-scripts/testrun/creds.yaml ]; then
+  PEAT_CREDS="./creds.yaml"
+elif [ -r ${HOME}/peat-scripts/testrun/creds.yaml ]; then
   SHKEY="`cat ${HOME}/peat-scripts/testrun/creds.yaml |awk '/shared_key/ {print $2}'`"
+  PEAT_CREDS=${HOME}/peat-scripts/testrun/creds.yaml
 fi
 
 
@@ -47,8 +54,6 @@ elif [ -x ${HOME}/peat-node/target/release/peat-node ]; then
 else
   PNBIN=""
 fi
-
-TCPP="50081"
 
 # per-node settings
 case "$HOSTNAME" in
@@ -76,4 +81,37 @@ case "$HOSTNAME" in
       ;;
 esac
 
+PEAT_NODE_LISTEN="0.0.0.0:${TCPP}"
+PEAT_NODE_DATA_DIR="data-dir"
+PEAT_NODE_APP_ID=${APPID}
+PEAT_NODE_SHARED_KEY=${SHKEY}
+PEAT_NODE_AUTO_SYNC=""
+PEAT_NODE_IROH_UDP_PORT=${UDPP}
+
+#PEAT_NODE_ENCRYPTION_KEY=""
+#PEAT_NODE_PEERS
+
+#PEAT_NODE_BLOB_STALL_TIMEOUT_SECS
+#PEAT_NODE_TOMBSTONE_TTL_HOURS
+#PEAT_NODE_GC_INTERVAL_SECS
+#PEAT_NODE_GC_BATCH_SIZE
+
+# PEAT_NODE_AGENT_ADDR
+# PEAT_NODE_AGENT_POLL_INTERVAL
+# PEAT_NODE_AGENT_TLS_CERT
+# PEAT_NODE_AGENT_TLS_KEY
+# PEAT_NODE_AGENT_TLS_CA
+# PEAT_NODE_ATTACHMENT_ROOT
+# PEAT_NODE_ATTACHMENT_MAX_FILE_BYTES
+# PEAT_NODE_ATTACHMENT_MAX_BUNDLE_BYTES
+# PEAT_NODE_ATTACHMENT_MAX_FILES_PER_BUNDLE
+# PEAT_NODE_ATTACHMENT_MAX_NODE_LIST_LEN
+# PEAT_NODE_ATTACHMENT_MAX_CONCURRENT_DISTRIBUTIONS
+# PEAT_NODE_ATTACHMENT_QUEUE_WHEN_FULL
+# PEAT_NODE_ATTACHMENT_DEFAULT_PRIORITY
+# PEAT_NODE_ATTACHMENT_DISCOVERY_GRACE_SECS
+# PEAT_NODE_ATTACHMENT_HANDLE_RETENTION_SECS
+# PEAT_NODE_ATTACHMENT_MAX_KNOWN_BUNDLES
+# PEAT_NODE_ATTACHMENT_INBOX
+# PEAT_NODE_ATTACHMENT_INBOX_POLL_SECS
 
