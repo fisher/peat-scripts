@@ -40,10 +40,10 @@ function warn() {
 
 if [ -r ./creds.yaml ]; then
   SHKEY="`cat ./creds.yaml |awk '/shared_key/ {print $2}'`"
-  PEAT_CREDS="./creds.yaml"
+  export PEAT_CREDS="./creds.yaml"
 elif [ -r ${HOME}/peat-scripts/testrun/creds.yaml ]; then
   SHKEY="`cat ${HOME}/peat-scripts/testrun/creds.yaml |awk '/shared_key/ {print $2}'`"
-  PEAT_CREDS=${HOME}/peat-scripts/testrun/creds.yaml
+  export PEAT_CREDS=${HOME}/peat-scripts/testrun/creds.yaml
 fi
 
 
@@ -81,12 +81,12 @@ case "$HOSTNAME" in
       ;;
 esac
 
-PEAT_NODE_LISTEN="0.0.0.0:${TCPP}"
-PEAT_NODE_DATA_DIR="data-dir"
-PEAT_NODE_APP_ID=${APPID}
-PEAT_NODE_SHARED_KEY=${SHKEY}
-PEAT_NODE_AUTO_SYNC=""
-PEAT_NODE_IROH_UDP_PORT=${UDPP}
+export PEAT_NODE_LISTEN="0.0.0.0:${TCPP}"
+export PEAT_NODE_DATA_DIR="data-dir"
+export PEAT_NODE_APP_ID=${APPID}
+export PEAT_NODE_SHARED_KEY=${SHKEY}
+export PEAT_NODE_AUTO_SYNC="true"
+export PEAT_NODE_IROH_UDP_PORT=${UDPP}
 
 #PEAT_NODE_ENCRYPTION_KEY=""
 #PEAT_NODE_PEERS
