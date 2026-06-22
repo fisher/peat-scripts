@@ -35,7 +35,7 @@ DOC_ID="stat-${HOSTNAME}"
 
 while [ true ]; do
   NR_FP=`head -1 /proc/vmstat |awk '{print $2}'`
-  TSH=`date '+%g-%m-%d %T %N'`
+  TSH=`date -u '+%g-%m-%d %T %N'`
   PAYLOAD="{\"name\":\"${HOSTNAME}\", \"free_pages\":\"${NR_FP}\",\"time_hr\":\"${TSH}\"}"
 
   echo "PutDocument ${COLLECTION}/${DOC_ID}"
