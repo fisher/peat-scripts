@@ -2,6 +2,7 @@
 import asyncio
 import json
 import socket
+import signal
 import sys
 from datetime import datetime, UTC
 from pathlib import Path
@@ -9,6 +10,9 @@ from pathlib import Path
 import httpx
 import yaml
 
+def signal_handler(sig, frame):
+    print("\nReceived signal, shutting down...", file=sys.stderr)
+    sys.exit(0)
 
 class PeatSidecarClient:
     def __init__(self, config_path: str):
@@ -121,6 +125,9 @@ async def main():
     hostname = socket.gethostname()
     doc_id = f"stat-{hostname}"
 
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)  # This handles Ctrl-C too
+
     # Initialize client
     try:
         client = PeatSidecarClient(config_path)
@@ -148,6 +155,8 @@ async def main():
             # Sleep for 1 second
             await asyncio.sleep(1)
 
+    except asyncio.exceptions.CancelledError:
+        print("\n(C-c) Shutting down...", file=sys.stderr)
     except KeyboardInterrupt:
         print("\nShutting down...", file=sys.stderr)
     except Exception as e:
