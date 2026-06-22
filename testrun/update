@@ -8,18 +8,21 @@ fi
 
 
 if [ -d ${HOME}/prj/esl/peat-node ]; then
+  stage "Updating peat-node in prj/esl"
   cd ${HOME}/prj/esl/peat-node
   git_update
 elif [ ! -d ${HOME}/peat-node ]; then
+  stage "Cloning peat-node into your home"
   cd
   git clone https://github.com/defenseunicorns/peat-node.git
   cd peat-node
 else
+  stage "Updating peat-node in your home directory"
   cd ${HOME}/peat-node
   git_update
 fi
 
-[ $? -ne 0 ] && halt "No changes, no recompile."
+[ $? -ne 0 -a "_$1" != '_-f' ] && halt "No changes, no recompile."
 
 export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS="-C link-arg=-fuse-ld=mold"
 export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER="clang"

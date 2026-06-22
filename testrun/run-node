@@ -6,7 +6,7 @@ elif [ -r ~/peat-scripts/testrun/common ]; then
     . ~/peat-scripts/testrun/common
 fi
 
-[ -z ${PNBIN} ] && { echo "${PNBIN} does not exist. Stop"; exit 1; }
+[ -z ${PNBIN} ] && { echo "Can't find peat-node binary. Stop"; exit 1; }
 
 mkdir -p ${HOME}/peat-testrun
 cd ${HOME}/peat-testrun
