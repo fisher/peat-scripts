@@ -1,0 +1,51 @@
+[Unit]
+Description=Peat-node telemetry pusher
+Documentation=https://github.com/fisher/peat-scripts
+# Start after network is up and peat-node is running
+After=network-online.target peat-node.service
+Wants=network-online.target
+# If peat-node is present on this machine, wait for it
+BindsTo=peat-node.service
+# if peat-node stops, this service stops too. Avoids the script piling up retry loops
+# against a dead node. If peat-node isn't installed as a systemd unit on some nodes,
+# change this to just After= and remove BindsTo.
+
+[Service]
+Type=simple
+User=peat
+Group=peat
+
+# Point the script at the packaged config location.
+# Remove this line and add --config support to the script (see review notes)
+# once the argparse fix is applied.
+# Environment=PUSH_TELEMETRY_CONFIG=/etc/push-telemetry/push_telemetry.yaml
+# WorkingDirectory=/etc/push-telemetry
+
+ExecStart=/usr/bin/push-telemetry --config /etc/push-telemetry/push_telemetry.yaml
+
+# Restart on failure but not on clean exit (e.g. SIGTERM from prerm)
+Restart=on-failure
+RestartSec=5s
+
+# Give the script time to flush and shut down cleanly on SIGTERM
+TimeoutStopSec=10s
+
+# Hardening — script only needs to read /proc and write to a local TCP port
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+# /proc/vmstat access requires real /proc
+ProtectProc=default
+ReadOnlyPaths=/etc/push-telemetry
+# Allow outbound TCP to peat-node (localhost only by default)
+RestrictAddressFamilies=AF_INET AF_INET6
+
+# Logging goes to journald, readable with:
+#   journalctl -u push-telemetry -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=push-telemetry
+
+[Install]
+WantedBy=multi-user.target

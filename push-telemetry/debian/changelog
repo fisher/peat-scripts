@@ -1,0 +1,5 @@
+push-telemetry (0.1.0-1) unstable; urgency=low
+
+  * Initial packaging.
+
+ -- Sergey <serge.fisher@gmail.com>  Thu, 24 Jun 2026 00:00:00 +0000

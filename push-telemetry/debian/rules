@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_install:
+	# script itself -> /usr/bin/
+	install -D -m 0755 push_telemetry.py \
+		$(CURDIR)/debian/push-telemetry/usr/bin/push-telemetry
+	# default config -> /etc/push-telemetry/
+	install -D -m 0640 push_telemetry.yaml \
+		$(CURDIR)/debian/push-telemetry/etc/push-telemetry/push_telemetry.yaml
+	# systemd unit -> /lib/systemd/system/
+	install -D -m 0644 push_telemetry.service \
+		$(CURDIR)/debian/push-telemetry/lib/systemd/system/push-telemetry.service

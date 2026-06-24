@@ -213,7 +213,7 @@ async def main():
                 payload = {
                     "name": hostname,
                     "free_pages": free_pages,
-                    "time_hr": timestamp
+                    "time_utc": timestamp
                 }
 
                 # Send document

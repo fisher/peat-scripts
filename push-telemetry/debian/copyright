@@ -1,0 +1,12 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: push-telemetry
+Upstream-Contact: Serge Rybalchenko <serge.fisher@gmail.com>
+Source: https://github.com/fisher/peat-scripts
+
+Files: *
+Copyright: 2026 Serge Rybalchenko
+License: Apache-2.0
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ On Debian systems the full text of the Apache-2.0 license can be
+ found in /usr/share/common-licenses/Apache-2.0.

@@ -1,0 +1,18 @@
+Source: push-telemetry
+Section: utils
+Priority: optional
+Maintainer: Serge <serge.fisher@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/fisher/peat-scripts
+
+Package: push-telemetry
+Architecture: all
+Depends: ${misc:Depends},
+ python3 (>= 3.9),
+ python3-httpx,
+ python3-yaml
+Description: Peat-node telemetry pusher for Raspberry Pi nodes
+ Pushes system telemetry to a local peat-node instance via the
+ PeatSidecar HTTP/gRPC API. Intended to run as a systemd service
+ alongside peat-node on Raspberry Pi field nodes.

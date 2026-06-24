@@ -1,0 +1,5 @@
+/files
+/push-telemetry.postrm.debhelper
+/push-telemetry.substvars
+/debhelper-build-stamp
+/.debhelper
