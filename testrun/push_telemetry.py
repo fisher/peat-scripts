@@ -4,6 +4,7 @@ Push json with telemetry to the peat-node instance
 
 Meant to work alongside the peat-node on the same machine.
 """
+import argparse
 import asyncio
 import json
 import socket
@@ -26,9 +27,9 @@ class PeatSidecarClient:
     def __init__(self, config_path: str):
         """Initialize client with YAML config file."""
         self.config = self._load_config(config_path)
-        self.extip = self.config['extip']
-        self.tcpp = self.config['tcpp']
-        self.base_url = f"http://{self.config['extip']}:{self.config['tcpp']}"
+        self.host = self.config['host']
+        self.port = self.config['port']
+        self.base_url = f"http://{self.config['host']}:{self.config['port']}"
         self.client = httpx.Client(timeout=30.0)
 
     def _load_config(self, config_path: str) -> dict:
@@ -41,7 +42,7 @@ class PeatSidecarClient:
             config = yaml.safe_load(f)
 
         # Validate required keys
-        required = ['extip', 'tcpp']
+        required = ['host', 'port']
         missing = [key for key in required if key not in config]
         if missing:
             raise ValueError(f"Missing required config keys: {', '.join(missing)}")
@@ -53,7 +54,7 @@ class PeatSidecarClient:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(2)
-            result = sock.connect_ex((self.extip, int(self.tcpp)))
+            result = sock.connect_ex((self.host, int(self.port)))
             sock.close()
             return result == 0
         except Exception:
@@ -61,11 +62,13 @@ class PeatSidecarClient:
 
     def wait_for_port(self, check_interval: float = 2.0) -> None:
         """Wait until the TCP port becomes open."""
-        print(f"Waiting for {self.extip}:{self.tcpp} to become available...", file=sys.stderr)
+        print(f"Waiting for {self.host}:{self.port} to become available...",
+              file=sys.stderr)
         while not self.is_port_open():
-            print(f"  Port {self.extip}:{self.tcpp} not open yet, retrying in {check_interval}s...", file=sys.stderr)
+            print(f"  Port {self.host}:{self.port} not open yet, "
+                  "retrying in {check_interval}s...", file=sys.stderr)
             time.sleep(check_interval)
-        print(f"Port {self.extip}:{self.tcpp} is now open!", file=sys.stderr)
+        print(f"Port {self.host}:{self.port} is now open!", file=sys.stderr)
 
     def call(self, method: str, payload: dict) -> dict:
         """
@@ -94,9 +97,10 @@ class PeatSidecarClient:
 
         except (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadTimeout) as e:
             print(f"Connection error: {e}", file=sys.stderr)
-            raise ConnectionError(f"Fail to connect to {self.extip}:{self.tcpp}") from e
+            raise ConnectionError(f"Fail to connect to {self.host}:{self.port}") from e
         except httpx.HTTPStatusError as e:
-            print(f"ERROR: {url} returned HTTP {e.response.status_code}", file=sys.stderr)
+            print(f"ERROR: {url} returned HTTP {e.response.status_code}",
+                  file=sys.stderr)
             print(f"  body: {e.response.text}", file=sys.stderr)
             raise
         except httpx.RequestError as e:
@@ -113,10 +117,13 @@ class PeatSidecarClient:
             except ConnectionError:
                 retry_count += 1
                 if retry_count < max_retries:
-                    print(f"  Connection failed, retry {retry_count}/{max_retries}...", file=sys.stderr)
+                    print(f"  Connection failed, retry {retry_count}/{max_retries}...",
+                          file=sys.stderr)
                     time.sleep(1)
                 else:
-                    print(f"  Connection failed after {max_retries} retries, waiting for port...", file=sys.stderr)
+                    print(f"  Connection failed after {max_retries} retries,"
+                          " waiting for port...",
+                          file=sys.stderr)
                     self.wait_for_port()
                     retry_count = 0  # Reset after port reopens
             except Exception:
@@ -141,8 +148,8 @@ class PeatSidecarClient:
         """Get current UTC timestamp with nanoseconds (matching shell script format)."""
         now = datetime.now(UTC)
         # Format: YY-MM-DD HH:MM:SS microseconds (6 digits)
-        ns = f"{now.microsecond:06d}"
-        return now.strftime(f"%g-%m-%d %H:%M:%S {ns}")
+        ms = f"{now.microsecond:06d}"
+        return now.strftime(f"%g-%m-%d %H:%M:%S {ms}")
 
     def put_document(self, collection: str, doc_id: str, payload: dict) -> None:
         """
@@ -170,7 +177,12 @@ class PeatSidecarClient:
 
 async def main():
     """entry point"""
+
     # Configuration
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", default="push_telemetry.yaml")
+    args = parser.parse_args()
+
     config_path = "push_telemetry.yaml"
     collection = "telemetry"
     hostname = socket.gethostname()
@@ -200,7 +212,7 @@ async def main():
                 # Build payload
                 payload = {
                     "name": hostname,
-                    "free_pages": str(free_pages),
+                    "free_pages": free_pages,
                     "time_hr": timestamp
                 }
 
