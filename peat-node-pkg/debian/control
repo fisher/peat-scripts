@@ -1,7 +1,7 @@
 Source: peat-node
 Section: utils
 Priority: optional
-Maintainer: Sergey <sergey@localhost>
+Maintainer: Serge Rybalchenko <serge.fisher@gmail.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.6.2
 Homepage: https://github.com/defenseunicorns/peat-node

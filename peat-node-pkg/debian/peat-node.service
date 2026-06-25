@@ -27,13 +27,14 @@ TimeoutStopSec=15s
 
 # Security hardening
 NoNewPrivileges=true
-PrivateTmp=true
+PrivateTmp=false
 ProtectSystem=strict
 ProtectHome=true
 # peat-node needs to write its data dir
 ReadWritePaths=/var/lib/peat-node
 # Iroh QUIC needs UDP; gRPC needs TCP
 RestrictAddressFamilies=AF_INET AF_INET6
+AmbientCapabilities=CAP_NET_RAW
 # Prevent privilege escalation via setuid binaries
 LockPersonality=true
 RestrictRealtime=true

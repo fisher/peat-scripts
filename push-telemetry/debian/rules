@@ -11,4 +11,4 @@ override_dh_auto_install:
 		$(CURDIR)/debian/push-telemetry/etc/push-telemetry/push_telemetry.yaml
 	# systemd unit -> /lib/systemd/system/
 	install -D -m 0644 push_telemetry.service \
-		$(CURDIR)/debian/push-telemetry/lib/systemd/system/push-telemetry.service
+		$(CURDIR)/debian/push-telemetry/usr/lib/systemd/system/push-telemetry.service

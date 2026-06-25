@@ -21,7 +21,7 @@ override_dh_auto_install:
 
 	# Systemd unit
 	install -D -m 0644 debian/peat-node.service \
-		$(CURDIR)/debian/peat-node/lib/systemd/system/peat-node.service
+		$(CURDIR)/debian/peat-node/usr/lib/systemd/system/peat-node.service
 
 	# Data directory placeholder (owned by peat user)
 	install -d -m 0750 \
