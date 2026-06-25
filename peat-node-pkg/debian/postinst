@@ -18,6 +18,11 @@ case "$1" in
         # Ensure data dir is owned by peat
         install -d -m 0750 -o peat -g peat /var/lib/peat-node
 
+        # Allow peat to register mDNS records via Avahi D-Bus interface
+        if getent group avahi >/dev/null 2>&1; then
+            adduser peat avahi || true
+        fi
+
         # Lock down the env file (contains SHKEY)
         chown root:peat /etc/peat-node/peat-node.env
         chmod 0640 /etc/peat-node/peat-node.env

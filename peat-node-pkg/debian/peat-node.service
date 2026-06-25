@@ -1,8 +1,8 @@
 [Unit]
 Description=Defense Unicorns peat-node (CRDT mesh sync daemon)
 Documentation=https://github.com/defenseunicorns/peat-node
-After=network-online.target
-Wants=network-online.target
+After=network-online.target avahi-daemon.service
+Wants=network-online.target avahi-daemon.service
 
 [Service]
 Type=simple
@@ -12,10 +12,6 @@ Group=peat
 # Load all PEAT_NODE_* variables from the conffile
 EnvironmentFile=/etc/peat-node/peat-node.env
 
-# Split PEAT_NODE_PEERS into --peer flags if set.
-# peat-node accepts repeated --peer flags; we pass them via the env var
-# natively if the binary supports PEAT_NODE_PEERS, otherwise use ExecStartPre
-# to build a wrapper. Check peat-node --help for native support.
 ExecStart=/usr/sbin/peat-node
 
 WorkingDirectory=/var/lib/peat-node
@@ -27,14 +23,18 @@ TimeoutStopSec=15s
 
 # Security hardening
 NoNewPrivileges=true
+# PrivateTmp would isolate /tmp and break mDNS socket access — must be off
 PrivateTmp=false
 ProtectSystem=strict
 ProtectHome=true
 # peat-node needs to write its data dir
 ReadWritePaths=/var/lib/peat-node
-# Iroh QUIC needs UDP; gRPC needs TCP
-RestrictAddressFamilies=AF_INET AF_INET6
+# AF_NETLINK is required for multicast group membership (mDNS)
+RestrictAddressFamilies=AF_INET AF_INET6 AF_NETLINK
+# CAP_NET_RAW and CAP_NET_BROADCAST are needed to join multicast groups
+# for Iroh's local mDNS peer discovery
 AmbientCapabilities=CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_RAW
 # Prevent privilege escalation via setuid binaries
 LockPersonality=true
 RestrictRealtime=true

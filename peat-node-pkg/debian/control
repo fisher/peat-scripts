@@ -9,7 +9,8 @@ Rules-Requires-Root: no
 
 Package: peat-node
 Architecture: arm64
-Depends: ${misc:Depends}
+Depends: ${misc:Depends},
+ avahi-daemon
 Description: Defense Unicorns Peat sidecar node (CRDT mesh sync daemon)
  Runs the peat-node binary as a systemd service. Exposes a gRPC API
  on localhost for co-located applications to read/write shared CRDT
