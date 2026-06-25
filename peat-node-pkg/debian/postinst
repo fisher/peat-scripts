@@ -1,0 +1,49 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        # Create dedicated 'peat' system user if it does not exist
+        if ! id -u peat >/dev/null 2>&1; then
+            adduser \
+                --system \
+                --no-create-home \
+                --home /var/lib/peat-node \
+                --shell /usr/sbin/nologin \
+                --group \
+                --gecos "Peat mesh node daemon" \
+                peat
+        fi
+
+        # Ensure data dir is owned by peat
+        install -d -m 0750 -o peat -g peat /var/lib/peat-node
+
+        # Lock down the env file (contains SHKEY)
+        chown root:peat /etc/peat-node/peat-node.env
+        chmod 0640 /etc/peat-node/peat-node.env
+
+        if [ -d /run/systemd/system ]; then
+            systemctl daemon-reload
+            systemctl enable peat-node.service
+
+            # Warn if shared key has not been configured
+            if grep -q '^PEAT_NODE_SHARED_KEY=CHANGE_ME' \
+                    /etc/peat-node/peat-node.env 2>/dev/null; then
+                echo "WARNING: PEAT_NODE_SHARED_KEY is not set in" \
+                     "/etc/peat-node/peat-node.env" >&2
+                echo "         Edit the file then: systemctl start peat-node" >&2
+            else
+                systemctl start peat-node.service || true
+            fi
+        fi
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+    *)
+        echo "postinst called with unknown argument '$1'" >&2
+        exit 1
+        ;;
+esac
+
+#DEBHELPER#
+exit 0

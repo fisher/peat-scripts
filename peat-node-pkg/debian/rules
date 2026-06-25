@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_build:
+	# Build is done externally by the 'update' script (cargo build --release).
+	# The pre-built binaries are expected alongside this debian/ directory.
+	@test -f ../peat-node   || (echo "ERROR: ../peat-node binary not found"; exit 1)
+	@test -f ../peat-cli    || (echo "ERROR: ../peat-cli binary not found"; exit 1)
+
+override_dh_auto_install:
+	# Binaries
+	install -D -m 0755 ../peat-node \
+		$(CURDIR)/debian/peat-node/usr/sbin/peat-node
+	install -D -m 0755 ../peat-cli \
+		$(CURDIR)/debian/peat-node/usr/bin/peat
+
+	# Default environment config (conffile — not overwritten on upgrade)
+	install -D -m 0640 debian/peat-node.env \
+		$(CURDIR)/debian/peat-node/etc/peat-node/peat-node.env
+
+	# Systemd unit
+	install -D -m 0644 debian/peat-node.service \
+		$(CURDIR)/debian/peat-node/lib/systemd/system/peat-node.service
+
+	# Data directory placeholder (owned by peat user)
+	install -d -m 0750 \
+		$(CURDIR)/debian/peat-node/var/lib/peat-node
+
+override_dh_auto_test:
+	# No test suite.
+

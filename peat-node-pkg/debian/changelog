@@ -1,0 +1,5 @@
+peat-node (0.1.0-1) unstable; urgency=low
+
+  * Initial packaging for RPi field deployment.
+
+ -- Sergey <sergey@localhost>  Thu, 25 Jun 2026 00:00:00 +0000

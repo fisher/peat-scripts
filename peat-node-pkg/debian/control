@@ -1,0 +1,18 @@
+Source: peat-node
+Section: utils
+Priority: optional
+Maintainer: Sergey <sergey@localhost>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/defenseunicorns/peat-node
+Rules-Requires-Root: no
+
+Package: peat-node
+Architecture: arm64
+Depends: ${misc:Depends}
+Description: Defense Unicorns Peat sidecar node (CRDT mesh sync daemon)
+ Runs the peat-node binary as a systemd service. Exposes a gRPC API
+ on localhost for co-located applications to read/write shared CRDT
+ state that syncs across the Peat mesh over Iroh/QUIC.
+ .
+ Intended for Raspberry Pi field nodes in the Peat RPi test deployment.

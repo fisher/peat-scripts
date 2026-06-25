@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    purge)
+        # Remove data dir only on purge, not plain remove
+        # (preserves mesh state across reinstalls)
+        rm -rf /var/lib/peat-node
+        if id -u peat >/dev/null 2>&1; then
+            deluser --system peat || true
+        fi
+        ;;
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        ;;
+    *)
+        echo "postrm called with unknown argument '$1'" >&2
+        exit 1
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
