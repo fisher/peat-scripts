@@ -183,7 +183,7 @@ async def main():
     parser.add_argument("--config", default="push_telemetry.yaml")
     args = parser.parse_args()
 
-    config_path = "push_telemetry.yaml"
+    config_path = args.config
     collection = "telemetry"
     hostname = socket.gethostname()
     doc_id = f"stat-{hostname}"
