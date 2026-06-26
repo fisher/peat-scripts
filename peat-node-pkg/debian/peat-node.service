@@ -19,7 +19,10 @@ WorkingDirectory=/var/lib/peat-node
 # Restart policy: always restart on crash; not on clean SIGTERM (package remove)
 Restart=on-failure
 RestartSec=5s
-TimeoutStopSec=15s
+TimeoutStopSec=20s
+KillMode=mixed
+KillSignal=SIGTERM
+FinalKillSignal=SIGKILL
 
 # Security hardening
 NoNewPrivileges=true
