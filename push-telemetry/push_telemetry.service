@@ -5,7 +5,8 @@ Documentation=https://github.com/fisher/peat-scripts
 After=network-online.target peat-node.service
 Wants=network-online.target
 # If peat-node is present on this machine, wait for it
-BindsTo=peat-node.service
+# (it doesn't restart the service after peat-node restarted, thus removed)
+#BindsTo=peat-node.service
 # if peat-node stops, this service stops too. Avoids the script piling up retry loops
 # against a dead node. If peat-node isn't installed as a systemd unit on some nodes,
 # change this to just After= and remove BindsTo.
@@ -24,7 +25,8 @@ Group=peat
 ExecStart=/usr/bin/push-telemetry --config /etc/push-telemetry/push_telemetry.yaml
 
 # Restart on failure but not on clean exit (e.g. SIGTERM from prerm)
-Restart=on-failure
+#Restart=on-failure
+Restart=always
 RestartSec=5s
 
 # Give the script time to flush and shut down cleanly on SIGTERM

@@ -60,7 +60,7 @@ class PeatSidecarClient:
         except Exception:
             return False
 
-    def wait_for_port(self, check_interval: float = 2.0) -> None:
+    def wait_for_port(self, check_interval: float = 5.0) -> None:
         """Wait until the TCP port becomes open."""
         print(f"Waiting for {self.host}:{self.port} to become available...",
               file=sys.stderr)
