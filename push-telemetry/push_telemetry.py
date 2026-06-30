@@ -5,7 +5,6 @@ Push json with telemetry to the peat-node instance
 Meant to work alongside the peat-node on the same machine.
 """
 import argparse
-import asyncio
 import json
 import socket
 import signal
@@ -148,10 +147,7 @@ class PeatSidecarClient:
         """
         Put a document into the collection.
 
-        Args:
-            collection: Collection name
-            doc_id: Document ID
-            payload: Document data as dict
+        payload: Document data as dict
         """
         request_payload = {
             "collection": collection,
@@ -168,7 +164,7 @@ class PeatSidecarClient:
         self.client.close()
 
 
-async def main():
+def main():
     """entry point"""
 
     # Configuration
@@ -213,13 +209,11 @@ async def main():
                 client.put_document(collection, doc_id, payload)
 
                 # Sleep for 1 second
-                await asyncio.sleep(1)
+                time.sleep(1)
             except Exception as e:
                 print(f"Unexpected error in main loop: {e}", file=sys.stderr)
-                await asyncio.sleep(2)
+                time.sleep(2)
 
-    except asyncio.exceptions.CancelledError:
-        print("\n(C-c) Shutting down...", file=sys.stderr)
     except KeyboardInterrupt:
         print("\n(Keyboard) Shutting down...", file=sys.stderr)
     except Exception as e:
@@ -230,4 +224,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
