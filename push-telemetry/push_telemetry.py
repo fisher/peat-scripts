@@ -51,14 +51,10 @@ class PeatSidecarClient:
 
     def is_port_open(self) -> bool:
         """Check if the TCP port is open and accepting connections."""
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(2)
             result = sock.connect_ex((self.host, int(self.port)))
-            sock.close()
             return result == 0
-        except Exception:
-            return False
 
     def wait_for_port(self, check_interval: float = 5.0) -> None:
         """Wait until the TCP port becomes open."""
@@ -66,7 +62,7 @@ class PeatSidecarClient:
               file=sys.stderr)
         while not self.is_port_open():
             print(f"  Port {self.host}:{self.port} not open yet, "
-                  "retrying in {check_interval}s...", file=sys.stderr)
+                  f"retrying in {check_interval}s...", file=sys.stderr)
             time.sleep(check_interval)
         print(f"Port {self.host}:{self.port} is now open!", file=sys.stderr)
 
@@ -133,12 +129,9 @@ class PeatSidecarClient:
         """Read NR_FP from /proc/vmstat."""
         try:
             with open('/proc/vmstat', 'r', encoding="utf-8") as f:
-                first_line = f.readline().strip()
-                # Format: "nr_free_pages 12345"
-                parts = first_line.split()
-                if len(parts) >= 2:
-                    return int(parts[1])
-                raise ValueError(f"Unexpected format: {first_line}")
+                for line in f:
+                    if line.startswith("nr_free_pages"):
+                        return int(line.split()[1])
         except FileNotFoundError:
             # Fallback for non-Linux systems (testing)
             print("WARNING: /proc/vmstat not found, using fallback value", file=sys.stderr)
